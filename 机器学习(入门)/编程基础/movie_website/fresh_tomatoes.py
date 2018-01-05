@@ -200,7 +200,8 @@ def movie_year_group(movies):
     moviedic = {}
     #电影数据归并
     for movie in movies:
-        if moviedic.has_key(movie.year):
+        # Python3 Removed dict.has_key() – use the in operator instead.
+        if movie.year in moviedic:
             moviedic[movie.year].append(movie)
         else:
             moviedic[movie.year] = []
