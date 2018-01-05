@@ -178,7 +178,16 @@ def open_movies_page(movies):
 
   movie_list_content = ""
 
-  for year in sorted(moviedic.viewkeys(),reverse=True):
+  # Migrating directly to Python 3
+  # The 2to3 migration tool handles direct migrations to Python 3 in accordance with the semantic equivalents described above:
+  # d.viewkeys() -> d.keys()
+  # https://www.python.org/dev/peps/pep-0469/
+
+  # 第一次修改准备使用keys()，但是查阅资料发现python 2和3 有差异
+  # 参考: https://blog.labix.org/2008/06/27/watch-out-for-listdictkeys-in-python-3
+  #      https://www.zhihu.com/question/45015229
+  
+  for year in sorted(list(moviedic.keys()),reverse=True):
       movie_list_content += create_movie_tiles_content(year,moviedic[year])      
 
   # Replace the placeholder for the movie tiles with the actual dynamically generated content
