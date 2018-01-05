@@ -127,20 +127,20 @@ movie_tile_content = '''
 '''
 
 movie_year_content = '''
-<div class="row">
-    <div class="panel panel-primary"> 
-        <div class="panel-heading"> 
-            <h3 class="panel-title">{movie_year}</h3> 
-        </div> 
-        <div class="panel-body"> 
-            {movie_tile_content}
+    <div class="row">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">{movie_year}</h3>
+            </div>
+            <div class="panel-body">
+                {movie_tile_content}
+            </div>
         </div>
     </div>
-</div>
 '''
 
 
-def create_movie_tiles_content(year,movies):
+def create_movie_tiles_content(year, movies):
     # The HTML content for this section of the page
     content = ''
     for movie in movies:
@@ -151,10 +151,10 @@ def create_movie_tiles_content(year,movies):
         youtube_id_match = youtube_id_match or re.search(r'(?<=be/)[^&#]+', trailer_url)
         trailer_youku_id = youku_id_match.group(2) if youku_id_match else None
         trailer_youtube_id = youtube_id_match.group(0) if youtube_id_match else None
-        if trailer_youku_id != None:
-          trailer_src = 'http://player.youku.com/embed/' + trailer_youku_id
+        if trailer_youku_id is not None:
+            trailer_src = 'http://player.youku.com/embed/' + trailer_youku_id
         else:
-          trailer_src = 'http://youtube.com/embed/'+ trailer_youtube_id
+            trailer_src = 'http://youtube.com/embed/' + trailer_youtube_id
 
         # Append the tile for the movie with its content filled in
         content += movie_tile_content.format(
@@ -169,45 +169,47 @@ def create_movie_tiles_content(year,movies):
     )
     # return content
 
+
 def open_movies_page(movies):
-  # Create or overwrite the output file
-  output_file = open('fresh_tomatoes.html', 'w')
 
+    # Create or overwrite the output file
+    output_file = open('fresh_tomatoes.html', 'w')
 
-  moviedic = movie_year_group(movies)
+    moviedic = movie_year_group(movies)
 
-  movie_list_content = ""
+    movie_list_content = ""
 
-  # Migrating directly to Python 3
-  # The 2to3 migration tool handles direct migrations to Python 3 in accordance with the semantic equivalents described above:
-  # d.viewkeys() -> d.keys()
-  # https://www.python.org/dev/peps/pep-0469/
+    # Migrating directly to Python 3
+    # The 2to3 migration tool handles direct migrations to Python 3 in accordance with the semantic equivalents described above:
+    # d.viewkeys() -> d.keys()
+    # https://www.python.org/dev/peps/pep-0469/
 
-  # 第一次修改准备使用keys()，但是查阅资料发现python 2和3 有差异
-  # 参考: https://blog.labix.org/2008/06/27/watch-out-for-listdictkeys-in-python-3
-  #      https://www.zhihu.com/question/45015229
-  
-  for year in sorted(list(moviedic.keys()),reverse=True):
-      movie_list_content += create_movie_tiles_content(year,moviedic[year])      
+    # 第一次修改准备使用keys()，但是查阅资料发现python 2和3 有差异
+    # 参考:
+    # https://blog.labix.org/2008/06/27/watch-out-for-listdictkeys-in-python-3
+    # https://www.zhihu.com/question/45015229
 
-  # Replace the placeholder for the movie tiles with the actual dynamically generated content
-  #rendered_content = main_page_content.format(movie_tiles=create_movie_tiles_content(movies))
+    for year in sorted(list(moviedic.keys()), reverse=True):
+        movie_list_content += create_movie_tiles_content(year, moviedic[year])
 
-  rendered_content = main_page_content.format(movie_tiles=movie_list_content)
+    # Replace the placeholder for the movie tiles with the actual dynamically generated content
+    # rendered_content = main_page_content.format(movie_tiles=create_movie_tiles_content(movies))
 
-  # Output the file
-  output_file.write(main_page_head + rendered_content)
-  output_file.close()
+    rendered_content = main_page_content.format(movie_tiles=movie_list_content)
 
-  # open the output file in the browser
-  url = os.path.abspath(output_file.name)
-  webbrowser.open('file://' + url, new=2) # open in a new tab, if possible
+    # Output the file
+    output_file.write(main_page_head + rendered_content)
+    output_file.close()
+
+    # open the output file in the browser
+    url = os.path.abspath(output_file.name)
+    webbrowser.open('file://' + url, new=2)  # open in a new tab, if possible
 
 
 def movie_year_group(movies):
 
     moviedic = {}
-    #电影数据归并
+    # 电影数据归并
     for movie in movies:
         # Python3 Removed dict.has_key() – use the in operator instead.
         if movie.year in moviedic:
